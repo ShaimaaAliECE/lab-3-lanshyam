@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Lab3App
 {
@@ -10,51 +7,156 @@ namespace Lab3App
     {
         static void Main(string[] args)
         {
-            // Create a collection board
+
             CollectionBoard board = new CollectionBoard();
 
             List<Collectable> possibleCollectiable = new List<Collectable>();
-            // Three coins 
-            possibleCollectiable.Add(new Coin("Nickel", score:20, value:5));
-            possibleCollectiable.Add(new Coin("Dime", score:40, value:10));
+
+            possibleCollectiable.Add(new Coin("Nickel", score: 20, value: 5)); // values and scores
+            possibleCollectiable.Add(new Coin("Dime", score: 40, value: 10));
             possibleCollectiable.Add(new Coin("Toony", score: 50, value: 100));
 
-            // Five Diamonds with descriptions Diamond1, Diamond2, ... etc.
-            for (int i = 1;i <= 5; i++)
+
+            for (int i = 1; i <= 5; i++)
             {
-                possibleCollectiable.Add(new Diamond("Diamond"+ i, score: 100));
+                possibleCollectiable.Add(new Diamond("Diamond" + i, score: 100));
             }
 
-            // One Axe
+
             possibleCollectiable.Add(new Axe("OnlyAxe"));
 
-            // One MagicWand
-            possibleCollectiable.Add(new Axe("OnlyMagicWand"));
+            possibleCollectiable.Add(new MagicWand("OnlyMagicWand"));
 
-            // Associate the CollectionBoard object to all the possible Collectiables
-            // using a foreach loop
-            foreach (Collectable collectable in  possibleCollectiable)
+            foreach (Collectable collectable in possibleCollectiable)
             {
                 collectable.Board = board;
             }
 
-            // Create an empty list to start collecting 
             List<Collectable> collected = new List<Collectable>();
 
-            //Collect the items one-by-one in a foreach loop
+
             foreach (Collectable collectable in possibleCollectiable)
-            { 
+            {
                 collectable.AddMe(collected);
             }
 
             Console.WriteLine("========================================");
             Console.WriteLine("==== All the Collected items ===========");
             Console.WriteLine("========================================");
-            //Display all what was collected in a for each loop
-            foreach (Collectable collectable in possibleCollectiable)
+
+            foreach (Collectable collectable in collected)
             {
                 collectable.Display();
             }
+        }
+    }
+
+    internal class CollectionBoard
+    {
+        public int TotalScore { get; set; }
+        public int TotalValue { get; set; }
+
+        public CollectionBoard()
+        {
+            TotalScore = 0;
+            TotalValue = 0;
+        }
+    }
+
+
+    internal abstract class Collectable
+    {
+        public string Description { get; protected set; }
+        public int Score { get; protected set; }
+        public int Value { get; protected set; }
+        public CollectionBoard Board { get; set; }
+
+        public Collectable(string description, int score, int value)
+        {
+            Description = description;
+            Score = score;
+            Value = value;
+        }
+
+        public abstract void AddMe(List<Collectable> collected);
+        public abstract void Display();
+    }
+
+    internal class Coin : Collectable
+    {
+        public Coin(string description, int score, int value) : base(description, score, value)
+        {
+        }
+
+        public override void AddMe(List<Collectable> collected)
+        {
+            collected.Add(this);
+            Console.WriteLine($"{Description} Collected, Congrats!!!!");
+            Console.WriteLine($"Total Score is updated to: {Board.TotalScore += Score}");
+            Console.WriteLine($"Total Value is updated to: {Board.TotalValue += Value}");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Coin {Description} is displayed");
+        }
+    }
+
+    internal class Diamond : Collectable
+    {
+        public Diamond(string description, int score) : base(description, score, value: 0)
+        {
+        }
+
+        public override void AddMe(List<Collectable> collected)
+        {
+            collected.Add(this);
+            Console.WriteLine($"{Description} Collected, Congrats!!!!");
+            Console.WriteLine($"Total Score is updated to: {Board.TotalScore += Score}");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Diamond{Description} is displayed");
+        }
+    }
+
+    internal class Axe : Collectable
+    {
+        public Axe(string description) : base(description, score: 0, value: 0)
+        {
+        }
+
+        public override void AddMe(List<Collectable> collected)
+        {
+            collected.Add(this);
+            Console.WriteLine($"{Description} Collected, Congrats!!!!");
+            Console.WriteLine($"{Description} is Used");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"Axe {Description} is displayed");
+        }
+    }
+
+    internal class MagicWand : Collectable
+    {
+        public MagicWand(string description) : base(description, score: 0, value: 0)
+        {
+        }
+
+        public override void AddMe(List<Collectable> collected)
+        {
+            collected.Add(this);
+            Console.WriteLine($"{Description} Collected, Congrats!!!!");
+            Console.WriteLine($"{Description} is used");
+        }
+
+        public override void Display()
+        {
+            Console.WriteLine($"MagicWand {Description} is displayed");
+            Console.WriteLine("Press any key to continue . . . ");
         }
     }
 }
